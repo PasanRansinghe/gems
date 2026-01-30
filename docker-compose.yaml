@@ -1,0 +1,56 @@
+
+services:
+  backend:
+    image: ${DOCKER_HUB_USERNAME}/backend:latest
+    build: ./backend
+    ports:
+      - "4000:4000"
+    environment:
+      - DB_HOST=mysql
+      - DB_USER=root
+      - DB_PASSWORD=2570
+      - DB_NAME=myapp
+      - JWT_SECRET=your-super-secure-jwt-secret-key-2024
+      - PORT=4000
+    depends_on:
+      mysql:
+          condition: service_healthy
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    restart: unless-stopped
+
+  frontend:
+    image: ${DOCKER_HUB_USERNAME}/frontend:latest
+    build: ./frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - REACT_APP_API_URL=http://localhost:4000
+    depends_on:
+      - backend
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    restart: unless-stopped
+
+  mysql:
+    image: mariadb:11.7
+    environment:
+      MYSQL_ROOT_PASSWORD: 2570
+      MYSQL_DATABASE: myapp
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:  # ← Add health check
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      start_period: 30s
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    restart: unless-stopped
+
+volumes:
+  mysql_data:

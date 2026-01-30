@@ -1,0 +1,154 @@
+.search-container {
+  min-height: 100vh;
+  background-color: #f5f5f5;
+}
+
+.search-header {
+  background: white;
+  padding: 1rem 2rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.search-header h1 {
+  color: #333;
+  margin: 0;
+}
+
+.search-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.search-form {
+  background: white;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  margin-bottom: 2rem;
+}
+
+.filter-row {
+  display: flex;
+  gap: 1rem;
+  align-items: end;
+  flex-wrap: wrap;
+}
+
+.filter-group {
+  flex: 1;
+  min-width: 200px;
+}
+
+.filter-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.filter-group select {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+.filter-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.search-btn, .clear-btn {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.search-btn {
+  background: #4a90e2;
+  color: white;
+}
+
+.search-btn:hover:not(:disabled) {
+  background: #357abd;
+}
+
+.search-btn:disabled {
+  background: #95a5a6;
+  cursor: not-allowed;
+}
+
+.clear-btn {
+  background: #95a5a6;
+  color: white;
+}
+
+.clear-btn:hover {
+  background: #7f8c8d;
+}
+
+.search-results h2 {
+  color: #333;
+  margin-bottom: 1.5rem;
+}
+
+.filter-info {
+  color: #666;
+  font-size: 1rem;
+  font-weight: normal;
+}
+
+@media (max-width: 768px) {
+  .filter-row {
+    flex-direction: column;
+  }
+  
+  .filter-group {
+    min-width: 100%;
+  }
+  
+  .filter-actions {
+    width: 100%;
+  }
+  
+  .search-btn, .clear-btn {
+    flex: 1;
+  }
+  
+  .search-header {
+    flex-direction: column;
+    gap: 1rem;
+    text-align: center;
+  }
+}
+
+/* Add to existing Search.css */
+.gem-header-right {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.delete-btn {
+  background: #e74c3c;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 0.4rem 0.6rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.2s;
+}
+
+.delete-btn:hover {
+  background: #c0392b;
+}
+
