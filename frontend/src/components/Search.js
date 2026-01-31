@@ -23,13 +23,14 @@ const Search = ({ userData, onLogout, isAuthenticated }) => {
     e.preventDefault();
     setLoading(true);
     setHasSearched(true);
-    
+
     try {
       const queryParams = new URLSearchParams();
       if (filters.color) queryParams.append('color', filters.color);
       if (filters.type) queryParams.append('type', filters.type);
 
-      const response = await fetch(`http://localhost:4000/api/gem-posts/search?${queryParams}`);
+      const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:4000';
+      const response = await fetch(`${apiUrl}/api/gem-posts/search?${queryParams}`);
       const data = await response.json();
       if (response.ok) {
         setGemPosts(data);
@@ -57,7 +58,8 @@ const Search = ({ userData, onLogout, isAuthenticated }) => {
 
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`http://localhost:4000/api/gem-posts/${postId}`, {
+      const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:4000';
+      const response = await fetch(`${apiUrl}/api/gem-posts/${postId}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`
@@ -172,7 +174,7 @@ const Search = ({ userData, onLogout, isAuthenticated }) => {
                           </span>
                           {/* ADD DELETE BUTTON - Only show if user owns the post */}
                           {isAuthenticated && userData && post.user_id === userData.id && (
-                            <button 
+                            <button
                               className="delete-btn"
                               onClick={() => handleDeletePost(post.id)}
                               title="Delete this post"
@@ -182,7 +184,7 @@ const Search = ({ userData, onLogout, isAuthenticated }) => {
                           )}
                         </div>
                       </div>
-                      
+
                       <div className="gem-details">
                         <p><strong>Weight:</strong> {post.gem_weight} {post.gem_weight_unit}</p>
                         <p><strong>Owner:</strong> {post.owner_name}</p>

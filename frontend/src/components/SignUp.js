@@ -66,7 +66,8 @@ const SignUp = ({ switchToLogin, onSignUp }) => {
     setIsLoading(true);
     
     try {
-      const response = await fetch('http://localhost:4000/api/auth/signup', {
+      const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:4000';
+      const response = await fetch(`${apiUrl}/api/auth/signup`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

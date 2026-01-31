@@ -12,7 +12,8 @@ const Home = ({ userData, onLogout, isAuthenticated }) => {
 
   const fetchGemPosts = async () => {
     try {
-      const response = await fetch('http://localhost:4000/api/gem-posts');
+      const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:4000';
+      const response = await fetch(`${apiUrl}/api/gem-posts`);
       const data = await response.json();
       if (response.ok) {
         setGemPosts(data);
@@ -34,7 +35,8 @@ const Home = ({ userData, onLogout, isAuthenticated }) => {
 
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`http://localhost:4000/api/gem-posts/${postId}`, {
+      const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:4000';
+      const response = await fetch(`${apiUrl}/api/gem-posts/${postId}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`
@@ -102,7 +104,7 @@ const Home = ({ userData, onLogout, isAuthenticated }) => {
                     </span>
                     {/* ADD DELETE BUTTON - Only show if user owns the post */}
                     {isAuthenticated && userData && post.user_id === userData.id && (
-                      <button 
+                      <button
                         className="delete-btn"
                         onClick={() => handleDeletePost(post.id)}
                         title="Delete this post"
@@ -112,7 +114,7 @@ const Home = ({ userData, onLogout, isAuthenticated }) => {
                     )}
                   </div>
                 </div>
-                
+
                 <div className="gem-details">
                   <p><strong>Weight:</strong> {post.gem_weight} {post.gem_weight_unit}</p>
                   <p><strong>Owner:</strong> {post.owner_name}</p>

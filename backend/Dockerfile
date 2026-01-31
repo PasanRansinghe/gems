@@ -1,8 +1,10 @@
+# Use official Node.js runtime as base image
 FROM node:22-alpine
 
-WORKDIR /app
+# Set working directory
+WORKDIR /usr/src/app
 
-# Copy package files
+# Copy package.json and package-lock.json
 COPY package*.json ./
 
 # Install dependencies
@@ -11,16 +13,8 @@ RUN npm install
 # Copy source code
 COPY . .
 
-# Create a non-root user (optional but recommended)
-RUN addgroup -g 1001 -S nodejs
-RUN adduser -S nextjs -u 1001
-
-# Change ownership if using non-root user
-# RUN chown -R nextjs:nodejs /app
-
-# Use non-root user (optional)
-# USER nextjs
-
+# Expose the port the app runs on
 EXPOSE 4000
 
-CMD ["npm", "start"]
+# Start the application
+CMD ["node", "index.js"]

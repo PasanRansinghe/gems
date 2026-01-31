@@ -56,7 +56,8 @@ const PostAdd = ({ userData, onLogout }) => {
     setIsSubmitting(true);
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('http://localhost:4000/api/gem-posts', {
+      const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:4000';
+      const response = await fetch(`${apiUrl}/api/gem-posts`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -222,9 +223,9 @@ const PostAdd = ({ userData, onLogout }) => {
 
           {errors.submit && <div className="error submit-error">{errors.submit}</div>}
 
-          <button 
-            type="submit" 
-            className="submit-btn" 
+          <button
+            type="submit"
+            className="submit-btn"
             disabled={isSubmitting}
           >
             {isSubmitting ? 'Creating Post...' : 'Create Gem Post'}
