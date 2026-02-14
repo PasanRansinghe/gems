@@ -70,28 +70,34 @@ pipeline {
           string(credentialsId: 'ec2-server-ip', variable: 'EC2_IP')
         ]) {
           script {
-            // SSH Options to avoid host key checking (for demo purposes)
-            def sshOptions = "-o StrictHostKeyChecking=no -i $EC2_KEY"
-            
-            // 1. Copy the production compose file to the EC2 server
-            sh "scp $sshOptions docker-compose.prod.yaml $EC2_USER@$EC2_IP:docker-compose.yaml"
-            
-            // 2. SSH into EC2 and deploy
-            sh """
-              ssh $sshOptions $EC2_USER@$EC2_IP '
-                echo "Logging into Docker Hub on EC2..."
-                echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
+             sh '''
+                # Secure SSH Options
+                # Using known_hosts matching /dev/null to automatically accept new keys (careful in prod)
+                SSH_OPTS="-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i $EC2_KEY"
                 
-                echo "Pulling latest images..."
-                docker compose pull
+                echo "Deploying to $EC2_USER@$EC2_IP..."
+
+                # 1. Copy the production compose file
+                scp $SSH_OPTS docker-compose.prod.yaml $EC2_USER@$EC2_IP:docker-compose.yaml
                 
-                echo "Deploying application..."
-                docker compose up -d
+                # 2. Login to Docker Hub (piping password securely)
+                # We pipe the password into SSH, which pipes it to 'docker login' on the remote end
+                echo "$DOCKER_PASS" | ssh $SSH_OPTS $EC2_USER@$EC2_IP "sudo docker login -u '$DOCKER_USER' --password-stdin"
                 
-                echo "Cleaning up..."
-                docker image prune -f
-              '
-            """
+                # 3. Pull and Deploy (using sudo)
+                ssh $SSH_OPTS $EC2_USER@$EC2_IP '
+                    export REACT_APP_API_URL="http://localhost:4000"
+                    
+                    echo "Pulling latest images..."
+                    sudo docker compose pull
+                    
+                    echo "Deploying application..."
+                    sudo docker compose up -d
+                    
+                    echo "Cleaning up..."
+                    sudo docker image prune -f
+                '
+            '''
           }
         }
       }
