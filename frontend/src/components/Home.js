@@ -63,7 +63,7 @@ const Home = ({ userData, onLogout, isAuthenticated }) => {
   return (
     <div className="home-container">
       <header className="home-header">
-        <h1>💎 Gems Marketplace</h1>
+        <h1>💎 PASAN Gems Marketplace</h1>
         <nav className="nav-links">
           {isAuthenticated ? (
             <>
@@ -83,7 +83,7 @@ const Home = ({ userData, onLogout, isAuthenticated }) => {
       </header>
 
       <main className="gem-posts-grid">
-        <h2>PASANAvailable Gems</h2>
+        <h2>PASANA vailable Gems</h2>
         {gemPosts.length === 0 ? (
           <div className="no-posts">
             <p>No gem posts available yet.</p>
