@@ -32,8 +32,6 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: 2570
       MYSQL_DATABASE: gems
-    ports:
-      - "3306:3306"
     volumes:
       - mariadb_data:/var/lib/mysql
     healthcheck:
