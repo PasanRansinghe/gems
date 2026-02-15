@@ -91,6 +91,9 @@ pipeline {
                     export REACT_APP_API_URL='http://$EC2_IP:4000'
                     export JWT_SECRET='$JWT_SECRET'
                     
+                    echo 'Stopping old containers and cleaning up orphans...'
+                    sudo -E docker compose down --remove-orphans
+
                     echo 'Pulling latest images...'
                     sudo -E docker compose pull
                     
