@@ -83,7 +83,7 @@ const Home = ({ userData, onLogout, isAuthenticated }) => {
       </header>
 
       <main className="gem-posts-grid">
-        <h2>Available Gems</h2>
+        <h2>PASANAvailable Gems</h2>
         {gemPosts.length === 0 ? (
           <div className="no-posts">
             <p>No gem posts available yet.</p>
