@@ -91,8 +91,22 @@ pipeline {
                     export REACT_APP_API_URL='http://$EC2_IP:4000'
                     export JWT_SECRET='$JWT_SECRET'
                     
-                    echo 'Stopping old containers and cleaning up orphans...'
+                    echo 'Performing aggressive cleanup...'
+                    # 1. Stop host-level database services if running
+                    sudo systemctl stop mysql || true
+                    sudo systemctl stop mariadb || true
+                    
+                    # 2. Force remove specific conflicting container
+                    sudo docker rm -f gemstone-mysql-1 || true
+                    
+                    # 3. Force remove ANY container using port 3306
+                    sudo docker ps -q --filter 'publish=3306' | xargs -r sudo docker rm -f
+                    
+                    echo 'Stopping current project containers...'
                     sudo -E docker compose down --remove-orphans
+
+                    echo 'Wait for ports to free up...'
+                    sleep 5
 
                     echo 'Pulling latest images...'
                     sudo -E docker compose pull
