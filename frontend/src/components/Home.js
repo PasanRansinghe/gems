@@ -63,7 +63,7 @@ const Home = ({ userData, onLogout, isAuthenticated }) => {
   return (
     <div className="home-container">
       <header className="home-header">
-        <h1>💎 Gem Marketplace</h1>
+        <h1>💎 paka Marketplace</h1>
         <nav className="nav-links">
           {isAuthenticated ? (
             <>
