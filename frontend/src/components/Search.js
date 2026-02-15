@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import './Search.css';
+import config from '../config';
 
 const Search = ({ userData, onLogout, isAuthenticated }) => {
   const [filters, setFilters] = useState({
@@ -29,8 +30,7 @@ const Search = ({ userData, onLogout, isAuthenticated }) => {
       if (filters.color) queryParams.append('color', filters.color);
       if (filters.type) queryParams.append('type', filters.type);
 
-      const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:4000';
-      const response = await fetch(`${apiUrl}/api/gem-posts/search?${queryParams}`);
+      const response = await fetch(`${config.API_URL}/api/gem-posts/search?${queryParams}`);
       const data = await response.json();
       if (response.ok) {
         setGemPosts(data);
@@ -58,8 +58,7 @@ const Search = ({ userData, onLogout, isAuthenticated }) => {
 
     try {
       const token = localStorage.getItem('token');
-      const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:4000';
-      const response = await fetch(`${apiUrl}/api/gem-posts/${postId}`, {
+      const response = await fetch(`${config.API_URL}/api/gem-posts/${postId}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`

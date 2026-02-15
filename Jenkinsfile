@@ -67,7 +67,8 @@ pipeline {
         withCredentials([
           usernamePassword(credentialsId: 'dockerhub-cred', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS'),
           sshUserPrivateKey(credentialsId: 'ec2-ssh-key', keyFileVariable: 'EC2_KEY', usernameVariable: 'EC2_USER'),
-          string(credentialsId: 'ec2-server-ip', variable: 'EC2_IP')
+          string(credentialsId: 'ec2-server-ip', variable: 'EC2_IP'),
+          string(credentialsId: 'jwt-secret', variable: 'JWT_SECRET')
         ]) {
           script {
              sh '''
@@ -85,18 +86,20 @@ pipeline {
                 echo "$DOCKER_PASS" | ssh $SSH_OPTS $EC2_USER@$EC2_IP "sudo docker login -u '$DOCKER_USER' --password-stdin"
                 
                 # 3. Pull and Deploy (using sudo)
-                ssh $SSH_OPTS $EC2_USER@$EC2_IP '
-                    export REACT_APP_API_URL="http://localhost:4000"
+                # We export the variables inside the SSH session so docker compose can pick them up
+                ssh $SSH_OPTS $EC2_USER@$EC2_IP "
+                    export REACT_APP_API_URL='http://$EC2_IP:4000'
+                    export JWT_SECRET='$JWT_SECRET'
                     
-                    echo "Pulling latest images..."
-                    sudo docker compose pull
+                    echo 'Pulling latest images...'
+                    sudo -E docker compose pull
                     
-                    echo "Deploying application..."
-                    sudo docker compose up -d
+                    echo 'Deploying application...'
+                    sudo -E docker compose up -d
                     
-                    echo "Cleaning up..."
+                    echo 'Cleaning up...'
                     sudo docker image prune -f
-                '
+                "
             '''
           }
         }

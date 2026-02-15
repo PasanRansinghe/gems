@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './AuthForm.css';
+import config from '../config';
 
 const Login = ({ switchToSignUp, onLogin }) => {
   const [formData, setFormData] = useState({
@@ -55,8 +56,7 @@ const Login = ({ switchToSignUp, onLogin }) => {
     setIsLoading(true);
 
     try {
-      const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:4000';
-      const response = await fetch(`${apiUrl}/api/auth/login`, {
+      const response = await fetch(`${config.API_URL}/api/auth/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

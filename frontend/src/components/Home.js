@@ -1,6 +1,4 @@
-import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import './Home.css';
+import config from '../config';
 
 const Home = ({ userData, onLogout, isAuthenticated }) => {
   const [gemPosts, setGemPosts] = useState([]);
@@ -12,8 +10,7 @@ const Home = ({ userData, onLogout, isAuthenticated }) => {
 
   const fetchGemPosts = async () => {
     try {
-      const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:4000';
-      const response = await fetch(`${apiUrl}/api/gem-posts`);
+      const response = await fetch(`${config.API_URL}/api/gem-posts`);
       const data = await response.json();
       if (response.ok) {
         setGemPosts(data);
@@ -35,8 +32,7 @@ const Home = ({ userData, onLogout, isAuthenticated }) => {
 
     try {
       const token = localStorage.getItem('token');
-      const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:4000';
-      const response = await fetch(`${apiUrl}/api/gem-posts/${postId}`, {
+      const response = await fetch(`${config.API_URL}/api/gem-posts/${postId}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`
@@ -64,7 +60,7 @@ const Home = ({ userData, onLogout, isAuthenticated }) => {
   return (
     <div className="home-container">
       <header className="home-header">
-        <h1>💎 Gem Marketplace</h1>
+        <h1>💎 GGGem Marketplace</h1>
         <nav className="nav-links">
           {isAuthenticated ? (
             <>

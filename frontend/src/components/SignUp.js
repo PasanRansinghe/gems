@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './AuthForm.css';
+import config from '../config';
 
 const SignUp = ({ switchToLogin, onSignUp }) => {
   const [formData, setFormData] = useState({
@@ -17,7 +18,7 @@ const SignUp = ({ switchToLogin, onSignUp }) => {
       ...prev,
       [name]: value
     }));
-    
+
     if (errors[name]) {
       setErrors(prev => ({
         ...prev,
@@ -28,46 +29,45 @@ const SignUp = ({ switchToLogin, onSignUp }) => {
 
   const validateForm = () => {
     const newErrors = {};
-    
+
     if (!formData.name.trim()) {
       newErrors.name = 'Name is required';
     }
-    
+
     if (!formData.email) {
       newErrors.email = 'Email is required';
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
       newErrors.email = 'Email is invalid';
     }
-    
+
     if (!formData.password) {
       newErrors.password = 'Password is required';
     } else if (formData.password.length < 6) {
       newErrors.password = 'Password must be at least 6 characters';
     }
-    
+
     if (!formData.confirmPassword) {
       newErrors.confirmPassword = 'Please confirm your password';
     } else if (formData.password !== formData.confirmPassword) {
       newErrors.confirmPassword = 'Passwords do not match';
     }
-    
+
     return newErrors;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     const newErrors = validateForm();
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       return;
     }
-    
+
     setIsLoading(true);
-    
+
     try {
-      const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:4000';
-      const response = await fetch(`${apiUrl}/api/auth/signup`, {
+      const response = await fetch(`${config.API_URL}/api/auth/signup`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -78,36 +78,36 @@ const SignUp = ({ switchToLogin, onSignUp }) => {
           password: formData.password
         }),
       });
-      
+
       const data = await response.json();
-      
+
       if (response.ok) {
         // Save token to localStorage
         localStorage.setItem('token', data.token);
         localStorage.setItem('user', JSON.stringify(data.user));
-        
+
         // Call the onSignUp callback with user data
         onSignUp(data.user);
-        
+
         // Show success message
         alert('Sign up successful!');
-        
+
         // Clear form
-        setFormData({ 
-          name: '', 
-          email: '', 
-          password: '', 
-          confirmPassword: '' 
+        setFormData({
+          name: '',
+          email: '',
+          password: '',
+          confirmPassword: ''
         });
       } else {
-        setErrors({ 
-          submit: data.message || 'Sign up failed. Please try again.' 
+        setErrors({
+          submit: data.message || 'Sign up failed. Please try again.'
         });
       }
     } catch (error) {
       console.error('Sign up error:', error);
-      setErrors({ 
-        submit: 'Network error. Please check your connection and try again.' 
+      setErrors({
+        submit: 'Network error. Please check your connection and try again.'
       });
     } finally {
       setIsLoading(false);
@@ -118,7 +118,7 @@ const SignUp = ({ switchToLogin, onSignUp }) => {
     <div className="auth-container">
       <form className="auth-form" onSubmit={handleSubmit}>
         <h2>Create Account</h2>
-        
+
         <div className="form-group">
           <label htmlFor="name">Full Name</label>
           <input
@@ -132,7 +132,7 @@ const SignUp = ({ switchToLogin, onSignUp }) => {
           />
           {errors.name && <div className="error">{errors.name}</div>}
         </div>
-        
+
         <div className="form-group">
           <label htmlFor="email">Email</label>
           <input
@@ -146,7 +146,7 @@ const SignUp = ({ switchToLogin, onSignUp }) => {
           />
           {errors.email && <div className="error">{errors.email}</div>}
         </div>
-        
+
         <div className="form-group">
           <label htmlFor="password">Password</label>
           <input
@@ -160,7 +160,7 @@ const SignUp = ({ switchToLogin, onSignUp }) => {
           />
           {errors.password && <div className="error">{errors.password}</div>}
         </div>
-        
+
         <div className="form-group">
           <label htmlFor="confirmPassword">Confirm Password</label>
           <input
@@ -174,17 +174,17 @@ const SignUp = ({ switchToLogin, onSignUp }) => {
           />
           {errors.confirmPassword && <div className="error">{errors.confirmPassword}</div>}
         </div>
-        
-        {errors.submit && <div className="error" style={{textAlign: 'center'}}>{errors.submit}</div>}
-        
-        <button 
-          type="submit" 
-          className="auth-button" 
+
+        {errors.submit && <div className="error" style={{ textAlign: 'center' }}>{errors.submit}</div>}
+
+        <button
+          type="submit"
+          className="auth-button"
           disabled={isLoading}
         >
           {isLoading ? 'Signing Up...' : 'Sign Up'}
         </button>
-        
+
         <div className="toggle-auth">
           <p>Already have an account? <button type="button" onClick={switchToLogin} disabled={isLoading}>Login</button></p>
         </div>

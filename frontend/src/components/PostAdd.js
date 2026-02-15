@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import './PostAdd.css';
+import config from '../config';
 
 const PostAdd = ({ userData, onLogout }) => {
   const navigate = useNavigate();
@@ -56,8 +57,7 @@ const PostAdd = ({ userData, onLogout }) => {
     setIsSubmitting(true);
     try {
       const token = localStorage.getItem('token');
-      const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:4000';
-      const response = await fetch(`${apiUrl}/api/gem-posts`, {
+      const response = await fetch(`${config.API_URL}/api/gem-posts`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
