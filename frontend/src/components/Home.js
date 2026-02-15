@@ -1,4 +1,7 @@
+import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import config from '../config';
+import './Home.css';
 
 const Home = ({ userData, onLogout, isAuthenticated }) => {
   const [gemPosts, setGemPosts] = useState([]);
