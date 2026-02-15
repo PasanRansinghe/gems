@@ -80,12 +80,10 @@ pipeline {
                 # 1. Copy the production compose file
                 scp $SSH_OPTS docker-compose.prod.yaml $EC2_USER@$EC2_IP:docker-compose.yaml
                 
-                # 2. Create .env file on remote server (Securely passing secrets)
-                # We use a heredoc passed to SSH to write the file
-                ssh $SSH_OPTS $EC2_USER@$EC2_IP "cat > .env" <<EOF
-REACT_APP_API_URL=http://$EC2_IP:4000
-JWT_SECRET=$JWT_SECRET
-EOF
+                # 2. Create .env file locally and copy it to remote server
+                echo "REACT_APP_API_URL=http://$EC2_IP:4000" > .env
+                echo "JWT_SECRET=$JWT_SECRET" >> .env
+                scp $SSH_OPTS .env $EC2_USER@$EC2_IP:.env
 
                 # 3. Login to Docker Hub
                 echo "$DOCKER_PASS" | ssh $SSH_OPTS $EC2_USER@$EC2_IP "sudo docker login -u '$DOCKER_USER' --password-stdin"
